@@ -153,7 +153,13 @@ class Distro(object):
         owner_repo = raw_url_base.split("github.com/")[-1]
         tag = pkg_info.get("tag")
         xml_name = pkg_info.get("package_xml_name", "package.xml")
-        raw_url = f"https://raw.githubusercontent.com/{owner_repo}/{tag}/{xml_name}"
+        sub_directory = pkg_info.get("sub_directory", "")
+        if sub_directory:
+            sub_directory = sub_directory.strip("/")
+            xml_path = f"{sub_directory}/{xml_name}"
+        else:
+            xml_path = xml_name
+        raw_url = f"https://raw.githubusercontent.com/{owner_repo}/{tag}/{xml_path}"
         try:
             with urllib.request.urlopen(raw_url) as resp:
                 return resp.read().decode('utf-8')

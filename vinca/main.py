@@ -636,7 +636,14 @@ def generate_source(distro, vinca_conf):
             if pkg_names[0] in vinca_conf["skip_built_packages"]:
                 continue
         pkg_name = pkg_names[0]
-        entry["target_directory"] = "%s/src/work" % pkg_name
+        sub_directory = None
+        if distro.additional_packages_snapshot and pkg_name in distro.additional_packages_snapshot:
+            sub_directory = distro.additional_packages_snapshot[pkg_name].get("sub_directory")
+        if sub_directory:
+            entry["sub_directory"] = sub_directory
+            entry["target_directory"] = f"{pkg_name}/src/work/{sub_directory}"
+        else:
+            entry["target_directory"] = f"{pkg_name}/src/work"
 
         patches = []
         pd = vinca_conf["_patches"].get(pkg_name)
@@ -680,7 +687,14 @@ def generate_source_version(distro, vinca_conf):
             if not pkg_names or pkg_names[0] in vinca_conf["skip_built_packages"]:
                 continue
         pkg_name = pkg_names[0]
-        entry["target_directory"] = "%s/src/work" % pkg_name
+        sub_directory = None
+        if distro.additional_packages_snapshot and pkg_name in distro.additional_packages_snapshot:
+            sub_directory = distro.additional_packages_snapshot[pkg_name].get("sub_directory")
+        if sub_directory:
+            entry["sub_directory"] = sub_directory
+            entry["target_directory"] = f"{pkg_name}/src/work/{sub_directory}"
+        else:
+            entry["target_directory"] = f"{pkg_name}/src/work"
 
         patches = []
         pd = vinca_conf["_patches"].get(pkg_name)
